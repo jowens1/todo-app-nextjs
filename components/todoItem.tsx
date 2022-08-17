@@ -49,8 +49,7 @@ const TodoItem = ({todo, id, complete, edit, copy, remove }: Props) => {
 
     useLayoutEffect(() => {
         if (todo.completed !== isChecked) setChecked(todo.completed)
-        
-    },[todo])
+    },[todo, isChecked])
 
     const renderLabelOrEdit = () => {
         return (

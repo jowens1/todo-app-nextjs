@@ -7,7 +7,7 @@ type Props = {
 
 const Icon = ({iconName, onClick}: Props) =>
     <div className={'flex items-center justify-center'} onClick={onClick}>
-        <Image src={`/${iconName}.png`} width='16' height='16' />
+        <Image src={`/${iconName}.png`} alt={`${iconName}`} width='16' height='16' />
     </div>
    
 export default Icon
