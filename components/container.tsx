@@ -1,7 +1,11 @@
 type Props = {
-    children?: React.ReactNode
-}
+  children?: React.ReactNode;
+};
 
-const Container = ({children}: Props) => <div className="container flex flex-col items-center justify-center">{children}</div>
+const Container = ({ children }: Props) => (
+  <div className="container flex flex-col items-center justify-center">
+    {children}
+  </div>
+);
 
-export default Container
+export default Container;

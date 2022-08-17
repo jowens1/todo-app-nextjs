@@ -1,17 +1,23 @@
-import {  forwardRef, Ref } from "react"
+import { forwardRef, Ref } from 'react';
 
 type Props = {
-    placeholder?: string,
-}
+  placeholder?: string;
+};
 
-const Input = forwardRef<HTMLInputElement, Props>(({ placeholder = 'Placeholder text'}: Props, ref) => {
+const Input = forwardRef<HTMLInputElement, Props>(
+  ({ placeholder = 'Placeholder text' }: Props, ref) => {
     return (
-        <>
-            <input className="border border-solid rounded ml-4" ref={ref} placeholder={placeholder}/>
-        </>
-    )
-})
+      <>
+        <input
+          className="border border-solid rounded ml-4"
+          ref={ref}
+          placeholder={placeholder}
+        />
+      </>
+    );
+  }
+);
 
-Input.displayName = 'Input'
+Input.displayName = 'Input';
 
-export default Input
+export default Input;
