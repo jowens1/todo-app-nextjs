@@ -3,8 +3,8 @@ import TodoItem from './todoItem'
 
 type Props = {
     todos: Todo[],
-    complete: (id: number, isCompleted: boolean) => void
-    edit: (id: number, editedAction: string) => void
+    complete: (id: string, isCompleted: boolean) => void
+    edit: (id: string, editedAction: string) => void
     copy: (todo: Todo) => void
     remove: (todo: Todo) => void
 }

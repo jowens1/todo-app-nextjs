@@ -1,17 +1,18 @@
 import Todo from '../types/Todo'
 import Checkbox from './checkbox'
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { classNames } from '../utils/util'
 import Icon from './icon'
 import Input from './input'
 import Button from './button'
 
+import { v4 as uuidv4 } from 'uuid'
 
 type Props = {
     todo: Todo
     id: number
-    complete: (id:number, isCompleted: boolean) => void
-    edit: (id: number, editedAction: string) => void
+    complete: (id:string, isCompleted: boolean) => void
+    edit: (id: string, editedAction: string) => void
     copy: (todo: Todo) => void
     remove: (todo: Todo) => void
 }
@@ -33,7 +34,7 @@ const TodoItem = ({todo, id, complete, edit, copy, remove }: Props) => {
     
     const handleCopy = (todo: Todo) => {
         const newTodo:Todo = {
-            id: Math.floor(Math.random() * 20),
+            id: uuidv4(),
             action: todo.action,
             completed: todo.completed
         }
@@ -45,6 +46,11 @@ const TodoItem = ({todo, id, complete, edit, copy, remove }: Props) => {
         edit(todo.id, editInput?.current?.value || todo.action)
         setEditing(!isEditing)
     }
+
+    useLayoutEffect(() => {
+        if (todo.completed !== isChecked) setChecked(todo.completed)
+        
+    },[todo])
 
     const renderLabelOrEdit = () => {
         return (

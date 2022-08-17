@@ -1,5 +1,7 @@
+import { v4 as uuidv4 } from 'uuid'
+
 type Todo = {
-    id: number,
+    id: string,
     action: string,
     completed: boolean
 }
@@ -11,7 +13,7 @@ export enum TodoKeys {
 }
 
 export const genericTodo: Todo = {
-    id: 0,
+    id: uuidv4(),
     action: 'Create Todo Task',
     completed: false
 }

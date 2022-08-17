@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
+import {  useState } from 'react'
 import Container from '../components/container'
 import Card from '../components/card'
 import TodoList from '../components/todoList'
@@ -13,7 +13,7 @@ const Home: NextPage = () => {
 
   const handleCreate = (todo: Todo) =>  setTodos([...todos, todo])
 
-  const handleEdit = (id: number, editedAction: string) => setTodos(updateArray({
+  const handleEdit = (id: string, editedAction: string) => setTodos(updateArray({
     array: todos,
     testKey: TodoKeys.ID,
     testValue: id,
@@ -21,7 +21,7 @@ const Home: NextPage = () => {
     updateValue: editedAction
   }))
 
-  const handleComplete = (id: number, isCompleted: boolean) => setTodos(updateArray({
+  const handleComplete = (id: string, isCompleted: boolean) => setTodos(updateArray({
       array: todos,
       testKey: TodoKeys.ID,
       testValue: id,
@@ -32,7 +32,7 @@ const Home: NextPage = () => {
   const handleCopy = (todo: Todo) => setTodos([...todos, todo])
 
   const handleDelete = (todo: Todo) => setTodos([...removeItem(todos, todo)])
-
+  
   return (
     <div className="flex min-h-screen flex-col items-center pt-4 bg-blue-100">
       <Head>
