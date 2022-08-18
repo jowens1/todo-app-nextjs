@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply py-2 px-4 ml-4 rounded;
+  }
+  .sm {
+    @apply py-0 px-2;
+  }
+
+  .md {
+    @apply px-4;
+  }
+
+  .lg {
+    @apply px-8;
+  }
+
+  .xl {
+    @apply px-16;
+  }
+
+  .default {
+    @apply bg-gray-100 text-gray-800;
+  }
+
+  .default:hover {
+    @apply bg-gray-200 text-gray-800;
+  }
+
+  .primary {
+    @apply bg-blue-500 text-white;
+  }
+
+  .primary:hover {
+    @apply bg-blue-600 text-white;
+  }
+}
