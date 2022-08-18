@@ -1,4 +1,4 @@
-import { forwardRef, Ref } from 'react';
+import { forwardRef } from 'react';
 
 type Props = {
   placeholder?: string;
