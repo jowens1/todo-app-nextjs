@@ -3,7 +3,7 @@ type Props = {
 };
 
 const Card = ({ children }: Props) => (
-  <div className="flex flex-col w-1/2 p-4 mb-4 bg-slate-100 border-solid border border-gray-700 rounded items-center justify-center">
+  <div className="flex flex-col w-1/2 p-4 mb-4 bg-weird-gray rounded items-center justify-center shadow-frame">
     {children}
   </div>
 );

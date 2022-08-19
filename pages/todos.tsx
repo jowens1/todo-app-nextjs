@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Card from '../components/card';
 import Container from '../components/container';
 import Layout from '../components/layout';
+import Tile from '../components/tile';
 import TodoForm from '../components/todoForm';
 import TodoList from '../components/todoList';
 import Todo, { genericTodo, TodoKeys } from '../types/Todo';
@@ -42,6 +43,15 @@ const Todos = () => {
     <Layout>
       <Container>
         <Card>
+          <div className="flex w-full">
+            <Tile
+              linkPath="/"
+              imgPath="/home"
+              type="icon"
+              height={16}
+              width={16}
+            />
+          </div>
           <TodoForm submit={handleCreate} />
         </Card>
         <Card>

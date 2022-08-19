@@ -8,9 +8,12 @@ type Props = {
 };
 
 const Icon = ({ iconName, onClick, width = 16, height = 16 }: Props) => (
-  <div className={'flex items-center justify-center'} onClick={onClick}>
+  <div
+    className={'flex w-8 h-8 items-center justify-center rounded shadow-tile'}
+    onClick={onClick}
+  >
     <Image
-      src={`/${iconName}.png`}
+      src={`/${iconName}.svg`}
       alt={`${iconName}`}
       width={width}
       height={height}

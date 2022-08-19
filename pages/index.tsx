@@ -9,9 +9,8 @@ const Home: NextPage = () => {
     <Layout>
       <Container>
         <Card>
-          <div className="flex">
+          <div className="flex justify-center rounded-xl w-52 shadow-frame">
             <Tile imgPath="/checklist" linkPath="/todos" />
-            <Tile imgPath="/note" linkPath="/notes" />
           </div>
         </Card>
       </Container>
@@ -20,3 +19,5 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+//<Tile imgPath="/note" linkPath="/notes" />

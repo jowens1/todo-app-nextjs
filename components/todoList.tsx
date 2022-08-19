@@ -12,7 +12,7 @@ type Props = {
 const TodoList = ({ todos, complete, edit, copy, remove }: Props) => {
   const renderList = () =>
     todos.map((todo, index) => (
-      <li key={index} className="mb-1">
+      <li key={index} className="mb-2">
         <TodoItem
           todo={todo}
           id={index}

@@ -1,15 +1,47 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { classNames } from '../utils/util';
+import checklist from '../public/checklist.svg';
+
 type Props = {
   imgPath: string;
   linkPath: string;
+  height?: number;
+  width?: number;
+  type?: string;
 };
 
-const Tile = ({ imgPath, linkPath }: Props) => {
+const cssOptions = {
+  base: 'flex items-center justify-center rounded shadow-tile m-2',
+  tile: 'w-20 h-20',
+  icon: 'w-8 h-8',
+};
+const Tile = ({
+  imgPath,
+  linkPath,
+  height = 64,
+  width = 64,
+  type = 'tile',
+}: Props) => {
+  console.log('height', height);
+  console.log('width', width);
   return (
-    <div className="flex items-center justify-center rounded m-2 shadow-2xl bg-white">
+    <div
+      className={classNames(
+        `${cssOptions.base} ${
+          type === 'tile' ? cssOptions.tile : cssOptions.icon
+        }`
+      )}
+    >
       <Link href={linkPath}>
-        <Image src={`${imgPath}.png`} alt={imgPath} height={64} width={64} />
+        <a>
+          <Image
+            src={`${imgPath}.svg`}
+            alt={imgPath}
+            height={height}
+            width={width}
+          />
+        </a>
       </Link>
     </div>
   );

@@ -1,6 +1,6 @@
 import Todo from '../types/Todo';
 import Checkbox from './checkbox';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../utils/util';
 import Icon from './icon';
 import Input from './input';
@@ -19,7 +19,7 @@ type Props = {
 
 const cssOptions = {
   base: 'flex max-h-12 justify-between min-w-full',
-  label: 'flex max-w-md overflow-auto justify-center ml-4',
+  label: 'flex max-w-md overflow-auto items-center ml-4',
   completed: 'line-through',
 };
 
@@ -47,7 +47,7 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
     setEditing(!isEditing);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (todo.completed !== isChecked) setChecked(todo.completed);
   }, [todo, isChecked]);
 
@@ -85,10 +85,10 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
         <Checkbox isChecked={isChecked} onChange={() => handleComplete()} />
         {renderLabelOrEdit()}
       </div>
-      <div className={'flex justify-evenly w-24'}>
-        <Icon iconName="editPen" onClick={() => setEditing(!isEditing)} />
+      <div className={'flex justify-evenly w-32'}>
+        <Icon iconName="edit" onClick={() => setEditing(!isEditing)} />
         <Icon iconName="copy" onClick={() => handleCopy(todo)} />
-        <Icon iconName="trashcan" onClick={() => remove(todo)} />
+        <Icon iconName="trash" onClick={() => remove(todo)} />
       </div>
     </div>
   );
