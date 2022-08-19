@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { classNames } from '../utils/util';
-import checklist from '../public/checklist.svg';
 
 type Props = {
   imgPath: string;
@@ -23,8 +22,6 @@ const Tile = ({
   width = 64,
   type = 'tile',
 }: Props) => {
-  console.log('height', height);
-  console.log('width', width);
   return (
     <div
       className={classNames(
