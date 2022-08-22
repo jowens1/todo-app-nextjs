@@ -31,7 +31,7 @@ const Tile = ({
       )}
     >
       <Link href={linkPath}>
-        <a>
+        <a className="flex justify-center items-center">
           <Image
             src={`${imgPath}.svg`}
             alt={imgPath}

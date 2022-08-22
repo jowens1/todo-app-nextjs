@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../utils/util';
 import Icon from './icon';
 import Input from './input';
-import Button from './button';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -47,6 +46,8 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
     setEditing(!isEditing);
   };
 
+  const handleCancel = () => setEditing(!isEditing);
+
   useEffect(() => {
     if (todo.completed !== isChecked) setChecked(todo.completed);
   }, [todo, isChecked]);
@@ -55,16 +56,13 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
     return (
       <>
         {isEditing ? (
-          <>
+          <div className="flex w-[300px] justify-between ml-4">
             <Input ref={editInput} placeholder={todo.action} />
-            <Button
-              onClick={() => handleEdit()}
-              variant={'primary'}
-              size={'sm'}
-            >
-              {'Update Todo'}
-            </Button>
-          </>
+            <div className="flex w-[74px] justify-between">
+              <Icon iconName="plus" onClick={handleEdit} />
+              <Icon iconName="x" onClick={handleCancel} />
+            </div>
+          </div>
         ) : (
           <label
             className={classNames(
@@ -82,7 +80,7 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
   return (
     <div id={`TodoItem-${id}`} className={classNames(`${cssOptions.base}`)}>
       <div className={'flex'}>
-        <Checkbox isChecked={isChecked} onChange={() => handleComplete()} />
+        <Checkbox isChecked={isChecked} onChange={handleComplete} />
         {renderLabelOrEdit()}
       </div>
       <div className={'flex justify-evenly w-32'}>

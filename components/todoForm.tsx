@@ -1,8 +1,8 @@
 import Input from './input';
 import { useRef } from 'react';
 import Todo from '../types/Todo';
-import Button from './button';
 import { v4 as uuidv4 } from 'uuid';
+import Icon from './icon';
 
 type Props = {
   submit: (todo: Todo) => void;
@@ -21,12 +21,10 @@ const TodoForm = ({ submit }: Props) => {
 
   return (
     <div className="flex flex-col items-center">
-      <h1>{'Create New Todo'}</h1>
-      <div>
+      <h1 className="mb-1">{'Create New Todo'}</h1>
+      <div className="flex h-[34px] w-64 items-center justify-between">
         <Input ref={todoInput} placeholder="Add new Todo" />
-        <Button onClick={addTodo} variant="primary">
-          {'Add Todo'}
-        </Button>
+        <Icon iconName="plus" onClick={addTodo} />
       </div>
     </div>
   );

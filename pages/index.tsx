@@ -11,6 +11,7 @@ const Home: NextPage = () => {
         <Card>
           <div className="flex justify-center rounded-xl w-52 shadow-frame">
             <Tile imgPath="/checklist" linkPath="/todos" />
+            <Tile imgPath="/notes2" linkPath="/todos" />
           </div>
         </Card>
       </Container>

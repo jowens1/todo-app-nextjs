@@ -43,7 +43,7 @@ const Todos = () => {
     <Layout>
       <Container>
         <Card>
-          <div className="flex w-full">
+          <div className="flex w-full items-center">
             <Tile
               linkPath="/"
               imgPath="/home"
