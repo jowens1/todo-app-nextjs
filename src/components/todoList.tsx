@@ -1,4 +1,4 @@
-import Todo from '../types/Todo';
+import { Todo } from '@prisma/client';
 import TodoItem from './todoItem';
 
 type Props = {

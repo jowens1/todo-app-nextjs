@@ -12,10 +12,4 @@ export enum TodoKeys {
   COMPLETED = 'completed',
 }
 
-export const genericTodo: Todo = {
-  id: uuidv4(),
-  action: 'Create Todo Task',
-  completed: false,
-};
-
 export default Todo;

@@ -1,4 +1,4 @@
-import Todo from '../types/Todo';
+import { Todo } from '@prisma/client';
 import Checkbox from './checkbox';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../utils/util';
@@ -36,6 +36,7 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
       id: uuidv4(),
       action: todo.action,
       completed: todo.completed,
+      authorId: 'cl75jng8k000690ymjinf9tq7',
     };
 
     copy(newTodo);
