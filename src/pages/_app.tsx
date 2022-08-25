@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 
 import { withTRPC } from '@trpc/next';
-import { AppRouter } from '@/backend/router';
+import { AppRouter } from '@/server/router';
 
 function getBaseUrl() {
   if (typeof window !== 'undefined') {

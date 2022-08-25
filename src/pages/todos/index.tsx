@@ -1,44 +1,72 @@
+import { NextPage } from 'next';
 import { trpc } from '@/utils/trpc';
 import { useEffect, useState } from 'react';
-import Card from '../components/card';
-import Container from '../components/container';
-import Layout from '../components/layout';
-import Tile from '../components/tile';
-import TodoForm from '../components/todoForm';
-import TodoList from '../components/todoList';
-import { TodoKeys } from '../types/Todo';
-import { updateArray, removeItem } from '../utils/util';
+import Card from '../../components/card';
+import Container from '../../components/container';
+import Layout from '../../components/layout';
+import Tile from '../../components/tile';
+import TodoForm from '../../components/todoForm';
+import TodoList from '../../components/todoList';
+import { updateArray, removeItem } from '../../utils/util';
 import { Todo } from '@prisma/client';
+import { requireAuth } from '@/components/requireAuth';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions as nextAuthOptions } from '../api/auth/[...nextauth]';
+// import { useSession } from 'next-auth/react';
 
-const Todos = () => {
-  const [init, setInit] = useState(true);
+export enum TodoKeys {
+  ID = 'id',
+  ACTION = 'action',
+  COMPLETED = 'completed',
+}
+
+type Props = {
+  authorId: string;
+  todosList: Todo[];
+};
+
+export const getServerSideProps = requireAuth(async (ctx) => {
+  const session = await unstable_getServerSession(
+    ctx.req,
+    ctx.res,
+    nextAuthOptions
+  );
+  if (!session) return { props: {} };
+  return { props: { authorId: session.user?.id } };
+});
+
+const Todos = ({ authorId }: Props) => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const { data: list, refetch } = trpc.useQuery(['todo.findAll']);
+  const { data: list, refetch } = trpc.useQuery([
+    'todo.findAll',
+    { authorId: authorId },
+  ]);
+
   const createTodo = trpc.useMutation(['todo.add'], {
-    onSuccess: () => {
+    onSuccess: (data) => {
       refetch();
-      console.log('create onSuccess');
+      console.log('create onSuccess', data);
     },
   });
+
   const deleteTodo = trpc.useMutation(['todo.delete'], {
-    onSuccess: () => {
+    onSuccess: (data) => {
       refetch();
-      console.log('delete onSuccess');
+      console.log('delete onSuccess', data);
     },
   });
 
   useEffect(() => {
-    if (init && list) {
-      setInit(false);
+    if (list) {
       setTodos([...list]);
     }
-  }, [list, init]);
+  }, [list]);
 
   const handleCreate = (todo: Todo) => {
     createTodo.mutate({
-      id: todo.id,
       action: todo.action,
       completed: todo.completed,
+      authorId: authorId,
     });
     if (todos) setTodos([...todos, todo]);
   };

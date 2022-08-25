@@ -1,8 +1,8 @@
 import Input from './input';
 import { useRef } from 'react';
 import { Todo } from '@prisma/client';
-import { v4 as uuidv4 } from 'uuid';
 import Icon from './icon';
+import { useSession } from 'next-auth/react';
 
 type Props = {
   submit: (todo: Todo) => void;
@@ -10,13 +10,13 @@ type Props = {
 
 const TodoForm = ({ submit }: Props) => {
   const todoInput = useRef<HTMLInputElement>(null);
-
+  const { data: session } = useSession();
   const addTodo = () => {
     submit({
-      id: uuidv4(),
+      id: '',
       action: todoInput?.current?.value || 'Press Edit Icon to update task!',
       completed: false,
-      authorId: 'cl75jng8k000690ymjinf9tq7',
+      authorId: session?.user?.id || null,
     });
   };
 

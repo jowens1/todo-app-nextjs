@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../utils/util';
 import Icon from './icon';
 import Input from './input';
+import { useSession } from 'next-auth/react';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -26,20 +27,34 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
   const editInput = useRef<HTMLInputElement>(null);
   const [isChecked, setChecked] = useState(todo.completed);
   const [isEditing, setEditing] = useState(false);
+  const { data: session } = useSession();
+
   const handleComplete = () => {
     setChecked(!isChecked);
     complete(todo.id, !isChecked);
   };
 
   const handleCopy = (todo: Todo) => {
-    const newTodo: Todo = {
-      id: uuidv4(),
-      action: todo.action,
-      completed: todo.completed,
-      authorId: 'cl75jng8k000690ymjinf9tq7',
-    };
+    console.log('session', session);
+    if (session != null) {
+      const newTodo: Todo = {
+        id: uuidv4(),
+        action: todo.action,
+        completed: todo.completed,
+        authorId: session!.user!.id,
+      };
 
-    copy(newTodo);
+      copy(newTodo);
+    } else {
+      const newTodo: Todo = {
+        id: uuidv4(),
+        action: todo.action,
+        completed: todo.completed,
+        authorId: null,
+      };
+
+      copy(newTodo);
+    }
   };
 
   const handleEdit = () => {

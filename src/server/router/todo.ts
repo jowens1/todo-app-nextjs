@@ -3,16 +3,22 @@ import { z } from 'zod';
 
 export const todoRouter = createRouter()
   .query('findAll', {
-    resolve: async ({ ctx }) => {
-      return await ctx.prisma.todo.findMany();
+    input: z.object({
+      authorId: z.string(),
+    }),
+    resolve: async ({ ctx, input }) => {
+      return await ctx.prisma.todo.findMany({
+        where: {
+          authorId: input.authorId,
+        },
+      });
     },
   })
   .mutation('add', {
     input: z.object({
-      id: z.string(),
       action: z.string(),
       completed: z.boolean(),
-      authorId: z.string().nullable().optional(),
+      authorId: z.string().optional(),
     }),
     resolve: async ({ ctx, input }) => {
       return await ctx.prisma.todo.create({
@@ -32,8 +38,4 @@ export const todoRouter = createRouter()
     },
   });
 
-//  data: {
-//         action: input.action,
-//         completed: input.completed,
-//         id: input.id,
-//       },
+export type TodoRouter = typeof todoRouter;
