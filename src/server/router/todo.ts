@@ -17,7 +17,6 @@ export const todoRouter = createRouter()
   .mutation('add', {
     input: z.object({
       action: z.string(),
-      completed: z.boolean(),
       authorId: z.string().optional(),
     }),
     resolve: async ({ ctx, input }) => {
@@ -34,6 +33,36 @@ export const todoRouter = createRouter()
       const { id } = input;
       return await ctx.prisma.todo.delete({
         where: { id },
+      });
+    },
+  })
+  .mutation('complete', {
+    input: z.object({
+      id: z.string(),
+      completed: z.boolean(),
+    }),
+    resolve: async ({ ctx, input }) => {
+      const { id, completed } = input;
+      return await ctx.prisma.todo.update({
+        where: { id },
+        data: {
+          completed: completed,
+        },
+      });
+    },
+  })
+  .mutation('edit', {
+    input: z.object({
+      id: z.string(),
+      action: z.string(),
+    }),
+    resolve: async ({ ctx, input }) => {
+      const { id, action } = input;
+      return await ctx.prisma.todo.update({
+        where: { id },
+        data: {
+          action: action,
+        },
       });
     },
   });

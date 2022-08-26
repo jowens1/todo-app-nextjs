@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { trpc } from '@/utils/trpc';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Card from '../../components/card';
 import Container from '../../components/container';
 import Layout from '../../components/layout';
@@ -35,7 +35,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: { authorId: session.user?.id } };
 });
 
-const Todos = ({ authorId }: Props) => {
+const Todos: NextPage<Props> = ({ authorId }: Props) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const { data: list, refetch } = trpc.useQuery([
     'todo.findAll',
@@ -43,62 +43,72 @@ const Todos = ({ authorId }: Props) => {
   ]);
 
   const createTodo = trpc.useMutation(['todo.add'], {
-    onSuccess: (data) => {
-      refetch();
-      console.log('create onSuccess', data);
-    },
+    onSuccess: () => refetch(),
   });
 
   const deleteTodo = trpc.useMutation(['todo.delete'], {
-    onSuccess: (data) => {
-      refetch();
-      console.log('delete onSuccess', data);
-    },
+    onSuccess: () => refetch(),
   });
 
+  const completeTodo = trpc.useMutation(['todo.complete'], {
+    onSuccess: () => refetch(),
+  });
+
+  const editTodo = trpc.useMutation(['todo.edit'], {
+    onSuccess: () => refetch(),
+  });
+
+  // useEffect(() => {
+  //   if (list) {
+  //     setTodos([...list]);
+  //   }
+  // }, [list]);
+
   useEffect(() => {
-    if (list) {
-      setTodos([...list]);
-    }
+    console.log('todos', todos);
+    console.log('list', list);
   }, [list]);
 
-  const handleCreate = (todo: Todo) => {
-    createTodo.mutate({
-      action: todo.action,
-      completed: todo.completed,
-      authorId: authorId,
-    });
-    if (todos) setTodos([...todos, todo]);
-  };
+  const handleCreate = useCallback(
+    (action: string) => {
+      createTodo.mutate({
+        action: action,
+        authorId: authorId,
+      });
+    },
+    [list, createTodo]
+  );
 
-  const handleEdit = (id: string, editedAction: string) =>
-    setTodos(
-      updateArray({
-        array: todos || [],
-        testKey: TodoKeys.ID,
-        testValue: id,
-        updateKey: TodoKeys.ACTION,
-        updateValue: editedAction,
-      })
-    );
+  const handleEdit = useCallback(
+    (id: string, editedAction: string) => {
+      editTodo.mutate({ id, action: editedAction });
+    },
+    [list, editTodo]
+  );
 
-  const handleComplete = (id: string, isCompleted: boolean) =>
-    setTodos(
-      updateArray({
-        array: todos,
-        testKey: TodoKeys.ID,
-        testValue: id,
-        updateKey: TodoKeys.COMPLETED,
-        updateValue: isCompleted,
-      })
-    );
+  const handleComplete = useCallback(
+    (id: string, isCompleted: boolean) => {
+      completeTodo.mutate({ id, completed: isCompleted });
+      // setTodos(
+      //   updateArray({
+      //     array: todos,
+      //     testKey: TodoKeys.ID,
+      //     testValue: id,
+      //     updateKey: TodoKeys.COMPLETED,
+      //     updateValue: isCompleted,
+      //   })
+      // );
+    },
+    [todos, completeTodo]
+  );
 
-  const handleCopy = (todo: Todo) => setTodos([...todos, todo]);
-
-  const handleDelete = (todo: Todo) => {
-    deleteTodo.mutate({ id: todo.id });
-    setTodos([...removeItem(todos, todo)]);
-  };
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteTodo.mutate({ id: id });
+      // setTodos([...removeItem(todos, todo)]);
+    },
+    [list, deleteTodo]
+  );
 
   return (
     <Layout>
@@ -117,10 +127,9 @@ const Todos = ({ authorId }: Props) => {
         </Card>
         <Card>
           <TodoList
-            todos={todos}
+            todos={list ?? []}
             complete={handleComplete}
             edit={handleEdit}
-            copy={handleCopy}
             remove={handleDelete}
           />
         </Card>

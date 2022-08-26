@@ -1,15 +1,20 @@
 import { Todo } from '@prisma/client';
+import { NextPage } from 'next';
 import TodoItem from './todoItem';
 
 type Props = {
   todos: Todo[];
   complete: (id: string, isCompleted: boolean) => void;
   edit: (id: string, editedAction: string) => void;
-  copy: (todo: Todo) => void;
-  remove: (todo: Todo) => void;
+  remove: (id: string) => void;
 };
 
-const TodoList = ({ todos, complete, edit, copy, remove }: Props) => {
+const TodoList: NextPage<Props> = ({
+  todos,
+  complete,
+  edit,
+  remove,
+}: Props) => {
   const renderList = () =>
     todos.map((todo, index) => (
       <li key={index} className="mb-2">
@@ -18,7 +23,6 @@ const TodoList = ({ todos, complete, edit, copy, remove }: Props) => {
           id={index}
           complete={complete}
           edit={edit}
-          copy={copy}
           remove={remove}
         />
       </li>

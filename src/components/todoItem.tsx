@@ -6,15 +6,12 @@ import Icon from './icon';
 import Input from './input';
 import { useSession } from 'next-auth/react';
 
-import { v4 as uuidv4 } from 'uuid';
-
 type Props = {
   todo: Todo;
   id: number;
   complete: (id: string, isCompleted: boolean) => void;
   edit: (id: string, editedAction: string) => void;
-  copy: (todo: Todo) => void;
-  remove: (todo: Todo) => void;
+  remove: (id: string) => void;
 };
 
 const cssOptions = {
@@ -23,38 +20,14 @@ const cssOptions = {
   completed: 'line-through',
 };
 
-const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
+const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
   const editInput = useRef<HTMLInputElement>(null);
   const [isChecked, setChecked] = useState(todo.completed);
   const [isEditing, setEditing] = useState(false);
-  const { data: session } = useSession();
 
   const handleComplete = () => {
     setChecked(!isChecked);
     complete(todo.id, !isChecked);
-  };
-
-  const handleCopy = (todo: Todo) => {
-    console.log('session', session);
-    if (session != null) {
-      const newTodo: Todo = {
-        id: uuidv4(),
-        action: todo.action,
-        completed: todo.completed,
-        authorId: session!.user!.id,
-      };
-
-      copy(newTodo);
-    } else {
-      const newTodo: Todo = {
-        id: uuidv4(),
-        action: todo.action,
-        completed: todo.completed,
-        authorId: null,
-      };
-
-      copy(newTodo);
-    }
   };
 
   const handleEdit = () => {
@@ -99,10 +72,9 @@ const TodoItem = ({ todo, id, complete, edit, copy, remove }: Props) => {
         <Checkbox isChecked={isChecked} onChange={handleComplete} />
         {renderLabelOrEdit()}
       </div>
-      <div className={'flex justify-evenly w-32'}>
+      <div className={'flex justify-evenly w-24'}>
         <Icon iconName="edit" onClick={() => setEditing(!isEditing)} />
-        <Icon iconName="copy" onClick={() => handleCopy(todo)} />
-        <Icon iconName="trash" onClick={() => remove(todo)} />
+        <Icon iconName="trash" onClick={() => remove(todo.id)} />
       </div>
     </div>
   );
