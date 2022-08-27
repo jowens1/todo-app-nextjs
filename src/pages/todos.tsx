@@ -44,11 +44,11 @@ const Todos = ({ session }: Props) => {
   });
 
   const completeTodo = trpc.useMutation(['todo.complete'], {
-    // onSuccess: () => refetch(),
+    onSuccess: () => refetch(),
   });
 
   const editTodo = trpc.useMutation(['todo.edit'], {
-    // onSuccess: () => refetch(),
+    onSuccess: () => refetch(),
   });
 
   useEffect(() => {
