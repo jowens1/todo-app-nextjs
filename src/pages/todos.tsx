@@ -40,7 +40,7 @@ const Todos = ({ session }: Props) => {
   });
 
   const deleteTodo = trpc.useMutation(['todo.delete'], {
-    // onSuccess: () => refetch(),
+    onSuccess: () => refetch(),
   });
 
   const completeTodo = trpc.useMutation(['todo.complete'], {
