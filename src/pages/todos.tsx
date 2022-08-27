@@ -36,7 +36,7 @@ const Todos = ({ session }: Props) => {
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const createTodo = trpc.useMutation(['todo.add'], {
-    // onSuccess: () => refetch(),
+    onSuccess: () => refetch(),
   });
 
   const deleteTodo = trpc.useMutation(['todo.delete'], {
