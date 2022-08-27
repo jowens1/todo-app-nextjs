@@ -11,9 +11,11 @@ import { updateArray, removeItem } from '../utils/util';
 import { Todo } from '@prisma/client';
 import { requireAuth } from '@/components/requireAuth';
 import { getSession, useSession } from 'next-auth/react';
-import { unstable_getServerSession } from 'next-auth';
+import { Session, unstable_getServerSession } from 'next-auth';
 import { authOptions as nextAuthOptions } from './api/auth/[...nextauth]';
-import { object } from 'zod';
+import { createSSGHelpers } from '@trpc/react/ssg';
+import { appRouter } from '@/server/router';
+import { createContext } from '@/server/router/context';
 // import { useSession } from 'next-auth/react';
 
 export enum TodoKeys {
@@ -23,79 +25,81 @@ export enum TodoKeys {
 }
 
 type Props = {
-  authorId: string;
-  test: string;
+  session: Session;
 };
 
-const Todos = ({ authorId, test }: Props) => {
-  console.log('authorId', authorId);
-  console.log('test', test);
-  const { data: session, status } = useSession();
-  console.log('session', session);
-  console.log('status', status);
+const Todos = ({ session }: Props) => {
+  const { data: list, refetch } = trpc.useQuery([
+    'todo.findAll',
+    { authorId: session?.user?.id || '' },
+  ]);
   const [todos, setTodos] = useState<Todo[]>([]);
-  const list: any[] = [];
-  const refetch = () => console.log('refetch');
-  // const { data: list, refetch } = trpc.useQuery([
-  //   'todo.findAll',
-  //   { authorId: authorId },
-  // ]);
 
   const createTodo = trpc.useMutation(['todo.add'], {
-    onSuccess: () => refetch(),
+    // onSuccess: () => refetch(),
   });
 
   const deleteTodo = trpc.useMutation(['todo.delete'], {
-    onSuccess: () => refetch(),
+    // onSuccess: () => refetch(),
   });
 
   const completeTodo = trpc.useMutation(['todo.complete'], {
-    onSuccess: () => refetch(),
+    // onSuccess: () => refetch(),
   });
 
   const editTodo = trpc.useMutation(['todo.edit'], {
-    onSuccess: () => refetch(),
+    // onSuccess: () => refetch(),
   });
 
-  // useEffect(() => {
-  //   if (list) {
-  //     setTodos([...list]);
-  //   }
-  // }, [list]);
+  useEffect(() => {
+    if (list) {
+      console.log('list', list);
+      setTodos([...list]);
+    }
+  }, [list]);
 
   useEffect(() => {
-    console.log('useEffect autherId', authorId);
-  }, [authorId]);
+    console.log('todos', todos);
+  }, [todos]);
 
   const handleCreate = useCallback(
     (action: string) => {
       createTodo.mutate({
         action: action,
-        authorId: authorId,
+        authorId: session?.user?.id || '',
       });
     },
-    [list, createTodo]
+    [createTodo]
   );
 
   const handleEdit = useCallback(
     (id: string, editedAction: string) => {
       editTodo.mutate({ id, action: editedAction });
+      setTodos(
+        updateArray({
+          array: todos,
+          testKey: TodoKeys.ID,
+          testValue: id,
+          updateKey: TodoKeys.ACTION,
+          updateValue: editedAction,
+        })
+      );
     },
-    [list, editTodo]
+    [editTodo]
   );
 
   const handleComplete = useCallback(
     (id: string, isCompleted: boolean) => {
       completeTodo.mutate({ id, completed: isCompleted });
-      // setTodos(
-      //   updateArray({
-      //     array: todos,
-      //     testKey: TodoKeys.ID,
-      //     testValue: id,
-      //     updateKey: TodoKeys.COMPLETED,
-      //     updateValue: isCompleted,
-      //   })
-      // );
+      setTodos(
+        updateArray({
+          array: todos,
+          testKey: TodoKeys.ID,
+          testValue: id,
+          updateKey: TodoKeys.COMPLETED,
+          updateValue: isCompleted,
+        })
+      );
     },
     [todos, completeTodo]
   );
@@ -105,7 +109,7 @@ const Todos = ({ authorId, test }: Props) => {
       deleteTodo.mutate({ id: id });
       // setTodos([...removeItem(todos, todo)]);
     },
-    [list, deleteTodo]
+    [deleteTodo]
   );
 
   return (
@@ -125,7 +129,7 @@ const Todos = ({ authorId, test }: Props) => {
         </Card>
         <Card>
           <TodoList
-            todos={list ?? []}
+            todos={todos}
             complete={handleComplete}
             edit={handleEdit}
             remove={handleDelete}
@@ -138,13 +142,23 @@ const Todos = ({ authorId, test }: Props) => {
 
 export default Todos;
 
-export const getServerSideProps = requireAuth(async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    nextAuthOptions
-  );
-  console.log('todos getServerSideProps ', session);
-  // if (!session) return { props: { authorId: 'missing' } };
-  return { props: { test: 'Hello World', authorId: session?.user?.id } };
-});
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+  // return requireAuth(context, async (session: Session) => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: await createContext(),
+  });
+
+  await ssg.prefetchQuery('todo.findAll', {
+    authorId: session?.user?.id || '',
+  });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      session,
+    },
+  };
+  // });
+}
