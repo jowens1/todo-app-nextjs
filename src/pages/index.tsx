@@ -3,7 +3,7 @@ import Container from '../components/container';
 import Card from '../components/card';
 import Tile from '../components/tile';
 import Layout from '@/components/layout';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
             </div>
             <div className="flex justify-center rounded-xl w-52 shadow-frame">
               <Tile imgPath="/checklist" linkPath="/todos" />
-              <Tile imgPath="/notes2" linkPath="/todos" />
+              <Tile imgPath="/notes2" linkPath="/notes" />
             </div>
           </Card>
         )}

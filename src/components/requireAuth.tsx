@@ -1,5 +1,5 @@
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { unstable_getServerSession } from 'next-auth';
+import { Session, unstable_getServerSession } from 'next-auth';
 
 import { authOptions as nextAuthOptions } from '../pages/api/auth/[...nextauth]';
 
@@ -10,7 +10,7 @@ export const requireAuth =
       ctx.res,
       nextAuthOptions
     );
-
+    console.log('required Auth ', session);
     if (!session) {
       return {
         redirect: {

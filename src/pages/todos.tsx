@@ -1,17 +1,19 @@
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { trpc } from '@/utils/trpc';
 import { useCallback, useEffect, useState } from 'react';
-import Card from '../../components/card';
-import Container from '../../components/container';
-import Layout from '../../components/layout';
-import Tile from '../../components/tile';
-import TodoForm from '../../components/todoForm';
-import TodoList from '../../components/todoList';
-import { updateArray, removeItem } from '../../utils/util';
+import Card from '../components/card';
+import Container from '../components/container';
+import Layout from '../components/layout';
+import Tile from '../components/tile';
+import TodoForm from '../components/todoForm';
+import TodoList from '../components/todoList';
+import { updateArray, removeItem } from '../utils/util';
 import { Todo } from '@prisma/client';
 import { requireAuth } from '@/components/requireAuth';
+import { getSession, useSession } from 'next-auth/react';
 import { unstable_getServerSession } from 'next-auth';
-import { authOptions as nextAuthOptions } from '../api/auth/[...nextauth]';
+import { authOptions as nextAuthOptions } from './api/auth/[...nextauth]';
+import { object } from 'zod';
 // import { useSession } from 'next-auth/react';
 
 export enum TodoKeys {
@@ -22,25 +24,22 @@ export enum TodoKeys {
 
 type Props = {
   authorId: string;
-  todosList: Todo[];
+  test: string;
 };
 
-export const getServerSideProps = requireAuth(async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    nextAuthOptions
-  );
-  if (!session) return { props: {} };
-  return { props: { authorId: session.user?.id } };
-});
-
-const Todos: NextPage<Props> = ({ authorId }: Props) => {
+const Todos = ({ authorId, test }: Props) => {
+  console.log('authorId', authorId);
+  console.log('test', test);
+  const { data: session, status } = useSession();
+  console.log('session', session);
+  console.log('status', status);
   const [todos, setTodos] = useState<Todo[]>([]);
-  const { data: list, refetch } = trpc.useQuery([
-    'todo.findAll',
-    { authorId: authorId },
-  ]);
+  const list: any[] = [];
+  const refetch = () => console.log('refetch');
+  // const { data: list, refetch } = trpc.useQuery([
+  //   'todo.findAll',
+  //   { authorId: authorId },
+  // ]);
 
   const createTodo = trpc.useMutation(['todo.add'], {
     onSuccess: () => refetch(),
@@ -65,9 +64,8 @@ const Todos: NextPage<Props> = ({ authorId }: Props) => {
   // }, [list]);
 
   useEffect(() => {
-    console.log('todos', todos);
-    console.log('list', list);
-  }, [list]);
+    console.log('useEffect autherId', authorId);
+  }, [authorId]);
 
   const handleCreate = useCallback(
     (action: string) => {
@@ -139,3 +137,14 @@ const Todos: NextPage<Props> = ({ authorId }: Props) => {
 };
 
 export default Todos;
+
+export const getServerSideProps = requireAuth(async (ctx) => {
+  const session = await unstable_getServerSession(
+    ctx.req,
+    ctx.res,
+    nextAuthOptions
+  );
+  console.log('todos getServerSideProps ', session);
+  // if (!session) return { props: { authorId: 'missing' } };
+  return { props: { test: 'Hello World', authorId: session?.user?.id } };
+});
