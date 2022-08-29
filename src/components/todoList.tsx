@@ -6,7 +6,7 @@ type Props = {
   todos: Todo[];
   complete: (id: string, isCompleted: boolean) => void;
   edit: (id: string, editedAction: string) => void;
-  remove: (id: string) => void;
+  remove: (todo: Todo) => void;
 };
 
 const TodoList: NextPage<Props> = ({

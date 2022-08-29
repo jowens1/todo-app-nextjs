@@ -1,13 +1,7 @@
 import * as trpc from '@trpc/server';
-import { TRPCError } from '@trpc/server';
+// import { TRPCError } from '@trpc/server';
 import * as trpcNext from '@trpc/server/adapters/next';
-import {
-  Session,
-  unstable_getServerSession as getServerSession,
-} from 'next-auth';
 import { getSession } from 'next-auth/react';
-
-import { authOptions as nextAuthOptions } from '../../pages/api/auth/[...nextauth]';
 import { prisma } from '../db/client';
 
 export const createContext = async (
@@ -16,8 +10,7 @@ export const createContext = async (
   const req = opts?.req;
   const res = opts?.res;
 
-  const session =
-    req && res && (await getServerSession(req, res, nextAuthOptions));
+  const session = await getSession(opts);
   return {
     req,
     res,

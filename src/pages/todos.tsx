@@ -39,9 +39,7 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
     onSuccess: () => refetch(),
   });
 
-  const deleteTodo = trpc.useMutation(['todo.delete'], {
-    onSuccess: () => refetch(),
-  });
+  const deleteTodo = trpc.useMutation(['todo.delete']);
 
   const completeTodo = trpc.useMutation(['todo.complete'], {
     onSuccess: () => refetch(),
@@ -57,12 +55,20 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
     }
   }, [list]);
 
+  useEffect(() => {
+    console.log('todos', todos);
+  }, [todos]);
+
   const handleCreate = useCallback(
     (action: string) => {
       createTodo.mutate({
         action: action,
         authorId: session?.user.id,
       });
+      setTodos([
+        ...todos,
+        { id: '', action: action, completed: false, authorId: session.user.id },
+      ]);
     },
     [createTodo]
   );
@@ -100,9 +106,9 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
   );
 
   const handleDelete = useCallback(
-    (id: string) => {
-      deleteTodo.mutate({ id: id });
-      // setTodos([...removeItem(todos, todo)]);
+    (todo: Todo) => {
+      deleteTodo.mutate({ id: todo.id });
+      setTodos([...removeItem(todos, todo)]);
     },
     [deleteTodo]
   );

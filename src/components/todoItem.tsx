@@ -11,7 +11,7 @@ type Props = {
   id: number;
   complete: (id: string, isCompleted: boolean) => void;
   edit: (id: string, editedAction: string) => void;
-  remove: (id: string) => void;
+  remove: (todo: Todo) => void;
 };
 
 const cssOptions = {
@@ -21,6 +21,7 @@ const cssOptions = {
 };
 
 const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
+  const [input, setInput] = useState('');
   const editInput = useRef<HTMLInputElement>(null);
   const [isChecked, setChecked] = useState(todo.completed);
   const [isEditing, setEditing] = useState(false);
@@ -33,9 +34,17 @@ const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
   const handleEdit = () => {
     edit(todo.id, editInput?.current?.value || todo.action);
     setEditing(!isEditing);
+    setInput('');
   };
 
-  const handleCancel = () => setEditing(!isEditing);
+  const handleCancel = () => {
+    setEditing(!isEditing);
+    setInput('');
+  };
+
+  const handleOnChange = (value: string) => {
+    setInput(value);
+  };
 
   useEffect(() => {
     if (todo.completed !== isChecked) setChecked(todo.completed);
@@ -46,7 +55,12 @@ const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
       <>
         {isEditing ? (
           <div className="flex w-[300px] justify-between ml-4">
-            <Input ref={editInput} placeholder={todo.action} />
+            <Input
+              ref={editInput}
+              placeholder={todo.action}
+              onChange={handleOnChange}
+              value={input}
+            />
             <div className="flex w-[74px] justify-between">
               <Icon iconName="plus" onClick={handleEdit} />
               <Icon iconName="x" onClick={handleCancel} />
@@ -74,7 +88,7 @@ const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
       </div>
       <div className={'flex justify-evenly w-24'}>
         <Icon iconName="edit" onClick={() => setEditing(!isEditing)} />
-        <Icon iconName="trash" onClick={() => remove(todo.id)} />
+        <Icon iconName="trash" onClick={() => remove(todo)} />
       </div>
     </div>
   );
