@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, NextPage } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import { trpc } from '@/utils/trpc';
 import { useCallback, useEffect, useState } from 'react';
 import Card from '../components/card';
@@ -10,13 +10,10 @@ import TodoList from '../components/todoList';
 import { updateArray, removeItem } from '../utils/util';
 import { Todo } from '@prisma/client';
 import { requireAuth } from '@/components/requireAuth';
-import { getSession, useSession } from 'next-auth/react';
-import { Session, unstable_getServerSession } from 'next-auth';
-import { authOptions as nextAuthOptions } from './api/auth/[...nextauth]';
+import { Session } from 'next-auth';
 import { createSSGHelpers } from '@trpc/react/ssg';
 import { appRouter } from '@/server/router';
 import { createContext } from '@/server/router/context';
-// import { useSession } from 'next-auth/react';
 
 export enum TodoKeys {
   ID = 'id',
@@ -29,10 +26,7 @@ type Props = {
 };
 
 const Todos = ({ session }: Props) => {
-  const { data: list, refetch } = trpc.useQuery([
-    'todo.findAll',
-    { authorId: session?.user?.id || '' },
-  ]);
+  const { data: list, refetch } = trpc.useQuery(['todo.findAll']);
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const createTodo = trpc.useMutation(['todo.add'], {
@@ -53,20 +47,15 @@ const Todos = ({ session }: Props) => {
 
   useEffect(() => {
     if (list) {
-      console.log('list', list);
       setTodos([...list]);
     }
   }, [list]);
-
-  useEffect(() => {
-    console.log('todos', todos);
-  }, [todos]);
 
   const handleCreate = useCallback(
     (action: string) => {
       createTodo.mutate({
         action: action,
-        authorId: session?.user?.id || '',
+        authorId: session.user.id,
       });
     },
     [createTodo]
@@ -143,30 +132,18 @@ const Todos = ({ session }: Props) => {
 export default Todos;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
-  if (!session) {
+  return requireAuth(context, async (session: Session) => {
+    const ssg = createSSGHelpers({
+      router: appRouter,
+      ctx: await createContext(),
+    });
+    await ssg.prefetchQuery('todo.findAll');
+
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        trpcState: ssg.dehydrate(),
+        session,
       },
     };
-  }
-  // return requireAuth(context, async (session: Session) => {
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    ctx: await createContext(),
   });
-
-  await ssg.prefetchQuery('todo.findAll', {
-    authorId: session?.user?.id || '',
-  });
-
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-      session,
-    },
-  };
-  // });
 }

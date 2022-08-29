@@ -1,5 +1,4 @@
-import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { Session, unstable_getServerSession } from 'next-auth';
+import type { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 
 import { authOptions as nextAuthOptions } from '../pages/api/auth/[...nextauth]';
@@ -14,5 +13,5 @@ export async function requireAuth(ctx: GetServerSidePropsContext, cb: any) {
       },
     };
   }
-  return cb({ session });
+  return cb(session);
 }

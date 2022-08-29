@@ -3,13 +3,10 @@ import { z } from 'zod';
 
 export const todoRouter = createRouter()
   .query('findAll', {
-    input: z.object({
-      authorId: z.string(),
-    }),
-    resolve: async ({ ctx, input }) => {
+    resolve: async ({ ctx }) => {
       return await ctx.prisma.todo.findMany({
         where: {
-          authorId: input.authorId,
+          authorId: ctx.session?.user.id,
         },
       });
     },
