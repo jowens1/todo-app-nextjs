@@ -32,6 +32,12 @@ export default withTRPC<AppRouter>({
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr
      */
+    if (typeof window !== 'undefined') {
+      // during client requests
+      return {
+        url: '/api/trpc',
+      };
+    }
     return {
       url: `${getBaseUrl()}/api/trpc`,
       /**
