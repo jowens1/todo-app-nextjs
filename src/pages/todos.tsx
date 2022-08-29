@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import { trpc } from '@/utils/trpc';
 import { useCallback, useEffect, useState } from 'react';
 import Card from '../components/card';
@@ -25,8 +25,14 @@ type Props = {
   session: Session;
 };
 
-const Todos = ({ session }: Props) => {
-  const { data: list, refetch } = trpc.useQuery(['todo.findAll']);
+const Todos: NextPage<Props> = ({ session }: Props) => {
+  const { data: list, refetch } = trpc.useQuery([
+    'todo.findAll',
+    {
+      authorId: session?.user.id,
+    },
+  ]);
+
   const [todos, setTodos] = useState<Todo[]>([]);
 
   const createTodo = trpc.useMutation(['todo.add'], {
@@ -55,7 +61,7 @@ const Todos = ({ session }: Props) => {
     (action: string) => {
       createTodo.mutate({
         action: action,
-        authorId: session.user.id,
+        authorId: session?.user.id,
       });
     },
     [createTodo]
@@ -137,7 +143,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       router: appRouter,
       ctx: await createContext(),
     });
-    await ssg.prefetchQuery('todo.findAll');
+    await ssg.prefetchQuery('todo.findAll', {
+      authorId: session?.user.id,
+    });
 
     return {
       props: {
