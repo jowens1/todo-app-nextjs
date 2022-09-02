@@ -20,7 +20,6 @@ const TodoForm = ({ submit }: Props) => {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="mb-1">{'Create New Todo'}</h1>
       <div className="flex h-[34px] w-64 items-center justify-between">
         <Input
           ref={todoInput}
