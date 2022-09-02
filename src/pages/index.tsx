@@ -3,7 +3,7 @@ import Container from '../components/container';
 import Card from '../components/card';
 import Tile from '../components/tile';
 import Layout from '@/components/layout';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 
 type Props = {

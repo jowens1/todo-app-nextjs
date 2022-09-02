@@ -1,7 +1,6 @@
 import Input from './input';
 import Icon from './icon';
 import { useRef, useState } from 'react';
-import { useSession } from 'next-auth/react';
 
 type Props = {
   submit: (action: string) => void;

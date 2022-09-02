@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../utils/util';
 import Icon from './icon';
 import Input from './input';
-import { useSession } from 'next-auth/react';
 
 type Props = {
   todo: Todo;

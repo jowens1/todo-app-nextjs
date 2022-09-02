@@ -55,10 +55,6 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
     }
   }, [list]);
 
-  useEffect(() => {
-    console.log('todos', todos);
-  }, [todos]);
-
   const handleCreate = useCallback(
     (action: string) => {
       createTodo.mutate({
@@ -70,7 +66,7 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
         { id: '', action: action, completed: false, authorId: session.user.id },
       ]);
     },
-    [createTodo]
+    [todos, createTodo, session.user.id, setTodos]
   );
 
   const handleEdit = useCallback(
@@ -86,7 +82,7 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
         })
       );
     },
-    [editTodo]
+    [todos, editTodo, setTodos]
   );
 
   const handleComplete = useCallback(
@@ -102,7 +98,7 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
         })
       );
     },
-    [todos, completeTodo]
+    [todos, completeTodo, setTodos]
   );
 
   const handleDelete = useCallback(
@@ -110,7 +106,7 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
       deleteTodo.mutate({ id: todo.id });
       setTodos([...removeItem(todos, todo)]);
     },
-    [deleteTodo]
+    [todos, deleteTodo, setTodos]
   );
 
   return (
