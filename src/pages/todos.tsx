@@ -66,7 +66,7 @@ const Todos: NextPage<Props> = ({ session }: Props) => {
         { id: '', action: action, completed: false, authorId: session.user.id },
       ]);
     },
-    [todos, createTodo, session.user.id, setTodos]
+    [todos, createTodo, session, setTodos]
   );
 
   const handleEdit = useCallback(
