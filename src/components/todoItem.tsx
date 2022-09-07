@@ -62,7 +62,7 @@ const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
             />
             <div className="flex w-[74px] justify-between">
               <Icon iconName="plus" onClick={handleEdit} />
-              <Icon iconName="x" onClick={handleCancel} />
+              <Icon iconName="x" onClick={handleCancel} shaded={true} />
             </div>
           </div>
         ) : (
@@ -87,7 +87,7 @@ const TodoItem = ({ todo, id, complete, edit, remove }: Props) => {
       </div>
       <div className={'flex justify-evenly w-24'}>
         <Icon iconName="edit" onClick={() => setEditing(!isEditing)} />
-        <Icon iconName="trash" onClick={() => remove(todo)} />
+        <Icon iconName="trash" onClick={() => remove(todo)} shaded={true} />
       </div>
     </div>
   );

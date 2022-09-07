@@ -14,7 +14,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
 
     return (
       <input
-        className="border w-[205px] h-8 rounded indent-2 shadow-input focus:outline-none"
+        className="border w-[205px]  h-8 rounded indent-2 shadow-input focus:outline-none"
         ref={ref}
         placeholder={placeholder}
         value={value}
