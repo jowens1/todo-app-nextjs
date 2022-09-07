@@ -11,7 +11,7 @@ type Props = {
 };
 
 const cssOptions = {
-  base: 'flex items-center justify-center rounded shadow-tile m-2',
+  base: 'flex items-center justify-center rounded shadow-frame m-2 active:shadow-pressed',
   tile: 'w-20 h-20',
   icon: 'w-8 h-8',
 };

@@ -13,15 +13,13 @@ const Input = forwardRef<HTMLInputElement, Props>(
     };
 
     return (
-      <div className="flex rounded h-8 w-52 items-center justify-center shadow-frame">
-        <input
-          className="border w-[205px] rounded shadow-frame indent-2"
-          ref={ref}
-          placeholder={placeholder}
-          value={value}
-          onChange={handleChange}
-        />
-      </div>
+      <input
+        className="border w-[205px] h-8 rounded indent-2 shadow-input focus:outline-none"
+        ref={ref}
+        placeholder={placeholder}
+        value={value}
+        onChange={handleChange}
+      />
     );
   }
 );

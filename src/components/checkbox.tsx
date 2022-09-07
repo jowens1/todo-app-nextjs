@@ -17,6 +17,7 @@ const Checkbox = ({ isChecked, onChange }: Props) => {
   return (
     <div className="flex items-center justify-center">
       <input
+        className="shadow-input"
         type="checkbox"
         checked={isChecked}
         onChange={handleChange(isChecked)}

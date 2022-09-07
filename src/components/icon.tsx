@@ -9,7 +9,9 @@ type Props = {
 
 const Icon = ({ iconName, onClick, width = 16, height = 16 }: Props) => (
   <div
-    className={'flex w-8 h-8 items-center justify-center rounded shadow-tile'}
+    className={
+      'flex w-8 h-8 items-center justify-center rounded shadow-frame active:shadow-pressed'
+    }
     onClick={onClick}
   >
     <Image

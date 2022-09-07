@@ -14,7 +14,7 @@ type Props = {
 };
 
 const cssOptions = {
-  base: 'flex max-h-12 justify-between min-w-full',
+  base: 'flex max-h-8 justify-between min-w-full',
   label: 'flex max-w-md overflow-auto items-center ml-4',
   completed: 'line-through',
 };
